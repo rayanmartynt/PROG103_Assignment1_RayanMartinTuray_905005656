@@ -27,10 +27,10 @@ def add_attendance(records):
     print("2. Absent")
     print("3. Late")
 
-    choice = int(input("Enter your choice:"))
+    choice = int(input("Enter choice (1/2/3):"))
     while choice == "":
         print("This field is required. Please enter a valid choice.")
-        choice = int(input("Enter your choice:"))
+        choice = int(input("Enter choice (1/2/3):"))
 
     if choice == 1:
         status = ATTENDANCE_STATUS_OPTIONS["1"]
@@ -96,7 +96,7 @@ def generate_attendance_report(records):
     #Calculating the percentage of attendance
     if total_records > 0:
         class_attendance = (total_present / total_records) * 100
-        print(f"Class attendance: {class_attendance:.1f}%")
+        print(f"Overall attendance: {class_attendance:.1f}%")
 
 
 def main():

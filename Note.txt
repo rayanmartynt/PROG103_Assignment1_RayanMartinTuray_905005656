@@ -1,0 +1,65 @@
+CONSTANTS:
+    STATUS_OPTIONS = ["Present", "Absent", "Late"]
+    MENU_EXIT = 3
+
+FUNCTION add_attendance(records):
+    PRINT "--- Add New Attendance Record ---"
+    name = INPUT "Student name: "
+    date = INPUT "Date (YYYY-MM-DD): "
+    PRINT "Status options: 1. Present, 2. Absent, 3. Late"
+    choice = INPUT "Enter choice (1/2/3): "
+    IF choice == "1":
+        status = "Present"
+    ELSE IF choice == "2":
+        status = "Absent"
+    ELSE IF choice == "3":
+        status = "Late"
+    ELSE:
+        PRINT "Invalid choice. Record not added."
+        RETURN
+    APPEND {"name": name, "date": date, "status": status} TO records
+    PRINT "Record added successfully!"
+
+FUNCTION generate_report(records):
+    IF records IS EMPTY:
+        PRINT "No attendance records found."
+        RETURN
+    CREATE empty dictionary student_stats
+    FOR EACH record IN records:
+        name = record["name"]
+        status = record["status"]
+        IF name NOT IN student_stats:
+            student_stats[name] = {"Present":0, "Absent":0, "Late":0}
+        INCREMENT student_stats[name][status] BY 1
+    PRINT "========== ATTENDANCE SUMMARY =========="
+    FOR EACH name, stats IN student_stats.items():
+        total = stats["Present"] + stats["Absent"] + stats["Late"]
+        attendance_percent = (stats["Present"] / total) * 100 if total>0 else 0
+        PRINT name
+        PRINT f"  Present: {stats['Present']}, Absent: {stats['Absent']}, Late: {stats['Late']}"
+        PRINT f"  Attendance Percentage: {attendance_percent:.1f}%"
+        PRINT "--------------------------------------"
+    // Optional: overall class stats
+    total_present = sum(s["Present"] for s in student_stats.values())
+    total_absences = sum(s["Absent"] for s in student_stats.values())
+    total_late = sum(s["Late"] for s in student_stats.values())
+    PRINT "CLASS TOTALS:"
+    PRINT f"  Total Present: {total_present}  |  Total Absent: {total_absences}  |  Total Late: {total_late}"
+
+MAIN:
+    records = []   // empty list
+    LOOP forever:
+        PRINT "\n===== Attendance Tracking System ====="
+        PRINT "1. Add Attendance Record"
+        PRINT "2. Generate Summary Report"
+        PRINT "3. Exit"
+        menu_choice = INPUT "Enter your choice: "
+        IF menu_choice == "1":
+            CALL add_attendance(records)
+        ELSE IF menu_choice == "2":
+            CALL generate_report(records)
+        ELSE IF menu_choice == "3":
+            PRINT "Exiting program. Goodbye!"
+            BREAK
+        ELSE:
+            PRINT "Invalid choice. Please enter 1, 2, or 3."
